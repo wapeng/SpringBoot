@@ -1,29 +1,31 @@
 package com.wp.controller;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.wp.model.User;
+
+import com.wp.service.UserService;
 
 @Component
 @RestController
 public class HelloWorldController {
 
-	@Value("${com.neo.title}")
-	private String title;
-	@RequestMapping("/hello")
-	public Object HelloWorld(){
-		User u = new User();
-		u.setId(100);
-		u.setName("王鹏");
-		System.out.println(title);
-		return u;
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping("/welcome")
+	public String toWelcome(Model model){
+		model.addAttribute("name","王鹏");
+		return "welcome";
 	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
+	
+	@ResponseBody
+	@RequestMapping("/selectUser/{id}")
+	public Object selectUser(@PathVariable("id") int id){
+		return userService.selectByPrimaryKey(id);
 	}
 }
